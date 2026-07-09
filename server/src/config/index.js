@@ -52,10 +52,6 @@ const config = Object.freeze({
     secret: env.JWT_SECRET,
   },
 
-  gemini: {
-    apiKey: env.GEMINI_API_KEY,
-  },
-
   google: {
     clientId: env.GOOGLE_CLIENT_ID,
   },
