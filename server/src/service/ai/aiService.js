@@ -1,6 +1,7 @@
 import ai from "../../config/gemini.js";
+import config from "../../config/index.js";
 
-const MODEL = "gemini-2.5-flash";
+const MODEL = config.gemini.chatModel;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

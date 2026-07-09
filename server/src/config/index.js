@@ -2,7 +2,9 @@ import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+  NODE_ENV: z
+    .enum(["development", "production", "test"])
+    .default("development"),
 
   PORT: z.coerce.number().default(3000),
 
@@ -21,6 +23,8 @@ const envSchema = z.object({
   QDRANT_URL: z.string().url("QDRANT_URL must be a valid URL").optional(),
 
   QDRANT_API_KEY: z.string().optional(),
+  GEMINI_CHAT_MODEL: z.string(),
+  GEMINI_EMBEDDING_MODEL: z.string(),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -62,7 +66,12 @@ const config = Object.freeze({
   },
   log: {
     level: env.LOG_LEVEL,
-},
+  },
+  gemini: {
+    apiKey: env.GEMINI_API_KEY,
+    chatModel: env.GEMINI_CHAT_MODEL,
+    embeddingModel: env.GEMINI_EMBEDDING_MODEL,
+  },
 });
 
 export default config;

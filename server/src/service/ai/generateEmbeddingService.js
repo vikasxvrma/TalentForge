@@ -1,9 +1,10 @@
 import  ai  from "../../config/gemini.js";
+import config from "../../config/index.js";
 
 export const generateEmbeddingService = async (chunks) => {
-
-    const response = await ai.models.embedContent({
-        model: "gemini-embedding-001",
+    const EMBEDDING_MODEL = config.gemini.embeddingModel
+        const response = await ai.models.embedContent({
+        model: EMBEDDING_MODEL,
         contents: chunks
     });
 
