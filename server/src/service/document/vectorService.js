@@ -12,19 +12,41 @@ export const initializeVectorStore = async () => {
     (collection) => collection.name === COLLECTION_NAME,
   );
 
-  if (exists) {
+  if (!exists) {
+    await qdrant.createCollection(COLLECTION_NAME, {
+      vectors: {
+        size: VECTOR_SIZE,
+        distance: "Cosine",
+      },
+    });
+
+    logger.info("✅ Qdrant collection created.");
+  } else {
     logger.info("✅ Qdrant collection already exists.");
-    return;
   }
 
-  await qdrant.createCollection(COLLECTION_NAME, {
-    vectors: {
-      size: VECTOR_SIZE,
-      distance: "Cosine",
-    },
-  });
+  // Ensure payload indexes exist
+  const indexes = [
+    "userId",
+    "documentId",
+    "documentType",
+  ];
 
-  logger.info("✅ Qdrant collection created.");
+  for (const field of indexes) {
+    try {
+      await qdrant.createPayloadIndex(COLLECTION_NAME, {
+        field_name: field,
+        field_schema: "keyword",
+      });
+
+      logger.info(`✅ Payload index created: ${field}`);
+    } catch (error) {
+      // Ignore if index already exists
+      logger.debug(
+        `Payload index '${field}' already exists or could not be created.`,
+      );
+    }
+  }
 };
 
 export const storeEmbeddings = async ({
