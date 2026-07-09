@@ -1,0 +1,8 @@
+server/node_modules
+server/.env
+server/.env.docker
+.env
+.env.docker
+server/.env
+*.log
+server/uploads/
