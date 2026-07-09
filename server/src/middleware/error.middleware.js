@@ -1,6 +1,6 @@
 import logger from "../config/logger.js";
 
-const errorMiddleware = (err, req, res) => {
+const errorMiddleware = (err, req, res, next) => {
   logger.error({
     err,
     requestId: req.requestId,
@@ -8,7 +8,9 @@ const errorMiddleware = (err, req, res) => {
   });
 
   const statusCode = err.isOperational ? err.statusCode : 500;
-  const message = err.isOperational ? err.message : "Internal Server Error";
+  const message = err.isOperational
+    ? err.message
+    : "Internal Server Error";
 
   res.status(statusCode).json({
     success: false,

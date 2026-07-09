@@ -40,7 +40,7 @@ export const initializeVectorStore = async () => {
       });
 
       logger.info(`✅ Payload index created: ${field}`);
-    } catch (error) {
+    } catch  {
       // Ignore if index already exists
       logger.debug(
         `Payload index '${field}' already exists or could not be created.`,

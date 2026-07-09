@@ -40,8 +40,7 @@ app.use("/api/v1/chat",chatRouter)
 app.use("/api/v1/resumes",resumeRouter)
 // login via google oAuth
 app.use("/api/v1/auth",authRoute);
-// error middleware 
-app.use(errorMiddleware);
+
 // default routing 
 app.get("/",(req,res)=>{
     return res.status(200).json({
@@ -50,6 +49,8 @@ app.get("/",(req,res)=>{
   "status": "running"
 });
 })
+// error middleware 
+app.use(errorMiddleware);
 
 // we will not make it listen 
 export default app
