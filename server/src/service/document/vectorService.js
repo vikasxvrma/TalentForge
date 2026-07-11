@@ -1,9 +1,16 @@
 import crypto from "crypto";
 import { qdrant } from "../../config/qdrant.js";
 import logger from "../../config/logger.js";
+import AppError from "../../errors/AppError.js";
 
 const COLLECTION_NAME = "resumes";
 const VECTOR_SIZE = 3072;
+
+const PAYLOAD_INDEXES = [
+  "userId",
+  "documentId",
+  "documentType",
+];
 
 export const initializeVectorStore = async () => {
   const { collections } = await qdrant.getCollections();
@@ -26,13 +33,7 @@ export const initializeVectorStore = async () => {
   }
 
   // Ensure payload indexes exist
-  const indexes = [
-    "userId",
-    "documentId",
-    "documentType",
-  ];
-
-  for (const field of indexes) {
+  for (const field of PAYLOAD_INDEXES) {
     try {
       await qdrant.createPayloadIndex(COLLECTION_NAME, {
         field_name: field,
@@ -40,11 +41,15 @@ export const initializeVectorStore = async () => {
       });
 
       logger.info(`✅ Payload index created: ${field}`);
-    } catch  {
-      // Ignore if index already exists
-      logger.debug(
-        `Payload index '${field}' already exists or could not be created.`,
-      );
+    } catch (error) {
+      const message = error?.data?.status?.error || "";
+
+      if (message.toLowerCase().includes("already exists")) {
+        logger.debug(`Payload index '${field}' already exists.`);
+      } else {
+        logger.error(error, `Failed to create payload index '${field}'.`);
+        throw new AppError("Failed to initialize vector database.", 500);
+      }
     }
   }
 };
@@ -65,66 +70,100 @@ export const storeEmbeddings = async ({
       userId,
       documentId,
       documentType,
-
       chunkNumber: index + 1,
       totalChunks: chunks.length,
-
       text: chunk,
     },
   }));
 
-  await qdrant.upsert(COLLECTION_NAME, {
-    wait: true,
-    points,
-  });
+  try {
+    await qdrant.upsert(COLLECTION_NAME, {
+      wait: true,
+      points,
+    });
 
-  return points.length;
+    return points.length;
+  } catch (error) {
+    logger.error(error, "Failed to store embeddings.");
+
+    throw new AppError(
+      "Failed to store resume embeddings.",
+      500,
+    );
+  }
 };
 
-export const searchEmbeddings = async ({ userId, queryVector,documentType, limit = 3 }) => {
-  const response = await qdrant.query(COLLECTION_NAME, {
-    query: queryVector,
+export const searchEmbeddings = async ({
+  userId,
+  queryVector,
+  documentType,
+  limit = 3,
+}) => {
+  try {
+    const response = await qdrant.query(COLLECTION_NAME, {
+      query: queryVector,
 
-    filter: {
-      must: [
-        {
-          key: "userId",
-          match: {
-            value: userId,
+      filter: {
+        must: [
+          {
+            key: "userId",
+            match: {
+              value: userId,
+            },
           },
-        },
-        {
-          key: "documentType",
-          match: {
-            value: documentType,
+          {
+            key: "documentType",
+            match: {
+              value: documentType,
+            },
           },
-        },
-      ],
-    },
+        ],
+      },
 
-    limit,
-    with_payload: true,
-  });
+      limit,
+      with_payload: true,
+    });
 
-  return response.points;
+    return response.points;
+  } catch (error) {
+    logger.error(error, "Vector search failed.");
+
+    throw new AppError(
+      "Failed to search resume.",
+      500,
+    );
+  }
 };
-export const deleteDocumentEmbeddings = async ({ userId, documentId }) => {
-  await qdrant.delete(COLLECTION_NAME, {
-    filter: {
-      must: [
-        {
-          key: "userId",
-          match: {
-            value: userId,
+
+export const deleteDocumentEmbeddings = async ({
+  userId,
+  documentId,
+}) => {
+  try {
+    await qdrant.delete(COLLECTION_NAME, {
+      filter: {
+        must: [
+          {
+            key: "userId",
+            match: {
+              value: userId,
+            },
           },
-        },
-        {
-          key: "documentId",
-          match: {
-            value: documentId,
+          {
+            key: "documentId",
+            match: {
+              value: documentId,
+            },
           },
-        },
-      ],
-    },
-  });
+        ],
+      },
+    });
+  } catch (error) {
+    logger.error(error, "Failed to delete embeddings.");
+
+    throw new AppError(
+      "Failed to delete previous resume embeddings.",
+      500,
+    );
+  }
 };
