@@ -19,7 +19,7 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required"),
 
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
-
+  FRONTEND_URL: z.string().url("FRONTEND_URL must be a valid URL"),
   QDRANT_URL: z.string().url("QDRANT_URL must be a valid URL").optional(),
 
   QDRANT_API_KEY: z.string().optional(),
@@ -67,6 +67,9 @@ const config = Object.freeze({
     apiKey: env.GEMINI_API_KEY,
     chatModel: env.GEMINI_CHAT_MODEL,
     embeddingModel: env.GEMINI_EMBEDDING_MODEL,
+  },
+  frontend: {
+    origins: env.FRONTEND_URL.split(","),
   },
 });
 
