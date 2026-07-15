@@ -1,4 +1,5 @@
 import loginWithGoogleService from "../service/auth/loginWithGoogleService.js";
+import getCurrentUserService from "../service/auth/getCurrentUserService.js";
 
 export const googleLogin = async (req, res) => {
   const { idToken } = req.body;
@@ -13,5 +14,14 @@ export const googleLogin = async (req, res) => {
   return res.status(200).json({
     success: true,
     ...authResponse,
+  });
+};
+
+export const getCurrentUser = async (req, res) => {
+  const user = await getCurrentUserService(req.user.id);
+
+  return res.status(200).json({
+    success: true,
+    user,
   });
 };
