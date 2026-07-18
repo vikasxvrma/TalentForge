@@ -1,5 +1,3 @@
-// src/config/rag.js
-
 export const RAG_CONFIG = {
     CHUNK_SIZE: 800,
     CHUNK_OVERLAP: 150,

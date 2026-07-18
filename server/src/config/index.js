@@ -25,6 +25,15 @@ const envSchema = z.object({
   QDRANT_API_KEY: z.string().optional(),
   GEMINI_CHAT_MODEL: z.string(),
   GEMINI_EMBEDDING_MODEL: z.string(),
+  AWS_REGION: z.string().min(1, "AWS_REGION is required"),
+
+  AWS_S3_BUCKET: z.string().min(1, "AWS_S3_BUCKET is required"),
+
+  AWS_ACCESS_KEY_ID: z.string().min(1, "AWS_ACCESS_KEY_ID is required"),
+
+  AWS_SECRET_ACCESS_KEY: z
+    .string()
+    .min(1, "AWS_SECRET_ACCESS_KEY is required"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -71,6 +80,12 @@ const config = Object.freeze({
   frontend: {
     origins: env.FRONTEND_URL.split(","),
   },
+  storage: {
+  region: env.AWS_REGION,
+  bucket: env.AWS_S3_BUCKET,
+  accessKeyId: env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+},
 });
 
 export default config;

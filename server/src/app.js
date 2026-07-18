@@ -10,6 +10,7 @@ import crypto from "crypto";
 import logger from "./config/logger.js";
 import cors from "cors";
 import config from "./config/index.js";
+import storagetRouter from "./routes/storageRouter.js";
 // create object
 const app = express();
 
@@ -45,6 +46,8 @@ app.use("/api/v1/chat", chatRouter);
 app.use("/api/v1/resumes", resumeRouter);
 // login via google oAuth
 app.use("/api/v1/auth", authRoute);
+// storage router 
+app.use("/api/v1",storagetRouter);
 
 // default routing
 app.get("/", (req, res) => {
