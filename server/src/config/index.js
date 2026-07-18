@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { z } from "zod";
 
 const envSchema = z.object({
@@ -34,6 +33,9 @@ const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z
     .string()
     .min(1, "AWS_SECRET_ACCESS_KEY is required"),
+  REDIS_URL: z
+    .string()
+    .url("REDIS_URL is required"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -81,11 +83,14 @@ const config = Object.freeze({
     origins: env.FRONTEND_URL.split(","),
   },
   storage: {
-  region: env.AWS_REGION,
-  bucket: env.AWS_S3_BUCKET,
-  accessKeyId: env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
-},
+    region: env.AWS_REGION,
+    bucket: env.AWS_S3_BUCKET,
+    accessKeyId: env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+  },
+  queue: {
+    redisUrl: env.REDIS_URL,
+  },
 });
 
 export default config;
