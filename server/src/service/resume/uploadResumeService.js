@@ -1,14 +1,28 @@
-import { documentIngestionService } from "../document/documentIngestionService.js";
+import {
+    createResume,
+} from "../../repositories/resumeRepository.js";
+
+import resumeQueue from "../../queues/resumeQueue.js";
 
 export const uploadResumeService = async ({
-    file,
-    userId
+    userId,
+    objectKey,
+    fileName,
+    mimeType,
+    fileSize,
 }) => {
 
-    return await documentIngestionService({
-        file,
+    const resume = await createResume({
         userId,
-        documentType: "resume"
+        objectKey,
+        fileName,
+        mimeType,
+        fileSize,
     });
 
+    await resumeQueue.enqueueResume({
+        resumeId: resume.id,
+    });
+
+    return resume;
 };

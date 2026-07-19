@@ -4,48 +4,53 @@ import { extractTextService } from "./extractTextService.js";
 import { normalizeTextService } from "./normalizeTextService.js";
 import { chunkTextService } from "./chunkTextService.js";
 import { generateEmbeddingService } from "../ai/generateEmbeddingService.js";
-import { storeEmbeddings, deleteDocumentEmbeddings } from "./vectorService.js";
+import {
+  storeEmbeddings,
+  deleteDocumentEmbeddings,
+} from "./vectorService.js";
 import logger from "../../config/logger.js";
 
 export const documentIngestionService = async ({
-  file,
+  fileBuffer,
+  fileName,
   userId,
   documentType,
 }) => {
   // Every uploaded document gets its own id
   let documentId = crypto.randomUUID();
 
-  // Step 1
-  const extractedText = await extractTextService(file.path);
+  // Step 1 - Extract text from PDF buffer
+  const extractedText = await extractTextService(fileBuffer);
 
-  // Step 2
+  // Step 2 - Normalize extracted text
   const normalizedText = normalizeTextService(extractedText);
 
-  // Step 3
+  // Step 3 - Split into chunks
   const chunks = await chunkTextService(normalizedText);
+
+  // Step 4 - Generate embeddings
   const start = Date.now();
-  // Step 4
+
   const embeddings = await generateEmbeddingService(chunks);
+
   logger.info(
     {
       duration: Date.now() - start,
     },
-    "Gemini completed",
+    "Gemini completed"
   );
-  // Optional:
-  // Delete previous resume vectors before inserting new ones
+
+  // Resume is a singleton document for each user
   if (documentType === "resume") {
     await deleteDocumentEmbeddings({
       userId,
       documentId: "resume",
     });
 
-    // keep a fixed document id for resumes
-    // documentId = "resume";
-  }
-  if (documentType == "resume") {
     documentId = "resume";
   }
+
+  // Step 5 - Store vectors
   const storedVectors = await storeEmbeddings({
     userId,
     documentId,
@@ -57,7 +62,7 @@ export const documentIngestionService = async ({
   return {
     documentId,
     documentType,
-    fileName: file.filename,
+    fileName,
     textLength: normalizedText.length,
     totalChunks: chunks.length,
     storedVectors,

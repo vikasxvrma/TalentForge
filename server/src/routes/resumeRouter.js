@@ -7,7 +7,8 @@ import authMiddleware from "../middleware/auth.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";
 import { searchResumeSchema } from "../validation/searchResumeSchema.js";
 import { uploadResumeRateLimiter } from "../middleware/rateLimiter.middleware.js";
+import {  uploadResumeSchema } from "../validation/uploadResumeSchema.js";
 const resumeRouter =Router();
-resumeRouter.post("/upload",authMiddleware,uploadResumeRateLimiter, upload.single("resume"),uploadResumeController);
+resumeRouter.post("/process",authMiddleware,uploadResumeRateLimiter,validate(uploadResumeSchema), uploadResumeController);
 resumeRouter.get("/search",authMiddleware,validate(searchResumeSchema), searchResume);
 export default resumeRouter

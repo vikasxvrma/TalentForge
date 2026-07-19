@@ -1,7 +1,6 @@
 import {
-  PutObjectCommand,
+  PutObjectCommand,GetObjectCommand
 } from "@aws-sdk/client-s3";
-
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import config from "../../config/index.js";
@@ -32,6 +31,25 @@ class StorageService {
       key,
     };
   }
+ 
+
+async downloadObject({ objectKey }) {
+
+    const command = new GetObjectCommand({
+        Bucket: config.storage.bucket,
+        Key: objectKey,
+    });
+
+    const response = await s3.send(command);
+
+    const chunks = [];
+
+    for await (const chunk of response.Body) {
+        chunks.push(chunk);
+    }
+
+    return Buffer.concat(chunks);
+}
 }
 
 export default new StorageService();

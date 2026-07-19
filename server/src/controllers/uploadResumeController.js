@@ -1,20 +1,29 @@
-import AppError from "../errors/AppError.js";
 import { uploadResumeService } from "../service/resume/uploadResumeService.js";
 
 export const uploadResumeController = async (req, res) => {
   const userId = req.user.id;
 
-  if (!req.file || !userId) {
-    throw new AppError("No resume uploaded or Invalid user.", 400);
-  }
+  const {
+    objectKey,
+    fileName,
+    mimeType,
+    fileSize,
+  } = req.body;
 
-  const result = await uploadResumeService({
-    file: req.file,
-    userId: userId,
+  const resume = await uploadResumeService({
+    userId,
+    objectKey,
+    fileName,
+    mimeType,
+    fileSize,
   });
-  return res.status(201).json({
+
+  return res.status(202).json({
     success: true,
-    message: "Resume uploaded successfully.",
-    data: result,
+    message: "Resume accepted for processing.",
+    data: {
+      resumeId: resume.id,
+      status: resume.status,
+    },
   });
 };
