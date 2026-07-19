@@ -2,6 +2,8 @@ FROM node:22.20.0-alpine
 
 WORKDIR /app
 
+RUN npm install -g npm@11.6.2
+
 COPY package*.json ./
 
 RUN npm ci
