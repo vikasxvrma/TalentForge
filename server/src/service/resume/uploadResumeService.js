@@ -11,7 +11,7 @@ export const uploadResumeService = async ({
     mimeType,
     fileSize,
 }) => {
-
+    console.log("Creating resume for user:", userId);
     const resume = await createResume({
         userId,
         objectKey,
@@ -19,10 +19,10 @@ export const uploadResumeService = async ({
         mimeType,
         fileSize,
     });
-
+    console.log("Resume created:", resume.id);
     await resumeQueue.enqueueResume({
         resumeId: resume.id,
     });
-
+    console.log("Resume enqueued");
     return resume;
 };
