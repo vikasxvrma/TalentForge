@@ -25,10 +25,15 @@ class ResumeQueue {
         );
     }
 
-    async enqueueResume(data) {
+    async enqueueResume({ resumeId }) {
         return this.queue.add(
             "process-resume",
-            data
+            {
+                resumeId,
+            },
+            {
+                jobId: resumeId,
+            }
         );
     }
 }
