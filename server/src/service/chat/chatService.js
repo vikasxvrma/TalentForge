@@ -15,6 +15,7 @@ import {
 
 export async function chatService({ userId, conversationId, message }) {
   let conversation;
+
   logger.info(
     {
       userId,
@@ -22,7 +23,8 @@ export async function chatService({ userId, conversationId, message }) {
     },
     "Generating AI response",
   );
-  // Step 1
+
+  // Step 1: Find or create conversation
   if (!conversationId) {
     conversation = await createConversation(userId);
   } else {
@@ -33,43 +35,43 @@ export async function chatService({ userId, conversationId, message }) {
     }
   }
 
-  // Step 2
-  await createMessage({
+  // Step 2: Persist user message
+  const userMessage = await createMessage({
     conversationId: conversation.id,
     role: "user",
     content: message,
   });
 
-  // Step 3
+  // Step 3: Load conversation history
   const history = await getConversationMessages({
     conversationId: conversation.id,
     userId,
   });
 
-  // Step 4
+  // Step 4: Generate AI response
   const answer = await aiOrchestratorService({
     userId,
     message,
     history,
   });
 
-  // Step 5
-  await createMessage({
+  // Step 5: Persist assistant message
+  const assistantMessage = await createMessage({
     conversationId: conversation.id,
     role: "assistant",
     content: answer,
   });
 
-  // Step 6
+  // Step 6: Update conversation activity
   await touchConversation(conversation.id);
 
-return {
-  conversation: {
-    id: conversation.id,
-  },
-  message: {
-    role: "assistant",
-    content: answer,
-  },
-};
+  // Step 7: Return response
+  return {
+    conversation: {
+      id: conversation.id,
+      title: conversation.title,
+    },
+    userMessage,
+    assistantMessage,
+  };
 }
