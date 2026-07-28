@@ -63,8 +63,13 @@ export async function chatService({ userId, conversationId, message }) {
   // Step 6
   await touchConversation(conversation.id);
 
-  return {
-    conversationId: conversation.id,
-    answer,
-  };
+return {
+  conversation: {
+    id: conversation.id,
+  },
+  message: {
+    role: "assistant",
+    content: answer,
+  },
+};
 }

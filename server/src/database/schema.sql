@@ -25,9 +25,14 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS conversations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL
+        REFERENCES users(id)
+        ON DELETE CASCADE,
+
+    title TEXT NOT NULL DEFAULT 'New Conversation',
 
     created_at TIMESTAMP DEFAULT NOW(),
+
     updated_at TIMESTAMP DEFAULT NOW()
 );
 

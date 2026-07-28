@@ -1,9 +1,7 @@
 // here we are setting up our server not starting
 import express from "express";
-import router from "./routes/index.js";
 import chatRouter from "./routes/chatRouter.js";
 import resumeRouter from "./routes/resumeRouter.js";
-import authRoute from "./routes/authRoute.js";
 import errorMiddleware from "./middleware/error.middleware.js";
 import pinoHttp from "pino-http";
 import crypto from "crypto";
@@ -12,6 +10,9 @@ import cors from "cors";
 import config from "./config/index.js";
 import storagetRouter from "./routes/storageRouter.js";
 import storageRouter from "./routes/storageRouter.js";
+import healthRouter from "./routes/index.js";
+import authRouter from "./routes/authRouter.js";
+import conversationRouter from "./routes/conversationRouter.js";
 // create object
 const app = express();
 
@@ -40,15 +41,18 @@ app.use((req, res, next) => {
   next();
 });
 //  <--------------routing --------------------->
-app.use("/api/v1", router);
+// health router 
+app.use("/api/v1", healthRouter);
 // chat router
 app.use("/api/v1/chat", chatRouter);
-// resume upload router
+// resumes router
 app.use("/api/v1/resumes", resumeRouter);
 // login via google oAuth
-app.use("/api/v1/auth", authRoute);
+app.use("/api/v1/auth", authRouter);
 // storage router 
 app.use("/api/v1/storage",storageRouter);
+// conversations router 
+app.use("/api/v1/conversations",conversationRouter);
 
 // default routing
 app.get("/", (req, res) => {

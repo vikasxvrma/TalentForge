@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import  { uploadResumeController } from "../controllers/uploadResumeController.js";
-import { upload } from "../middleware/upload.middleware.js";
 import { searchResume } from "../controllers/searchResume.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 import { validate } from "../middleware/validate.middleware.js";

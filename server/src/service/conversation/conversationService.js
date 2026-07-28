@@ -1,4 +1,5 @@
 import pool from "../../config/db.js";
+import { getConversationMessages } from "./messageService.js";
 
 
 //  * Create a new conversation for a user.
@@ -38,16 +39,20 @@ export async function getConversation(conversationId, userId) {
 //  * Fetch all conversations for a user.
 
 export async function listUserConversations(userId) {
-    const query = `
-        SELECT *
+  const query = `
+        SELECT
+            id,
+            title,
+            created_at,
+            updated_at
         FROM conversations
         WHERE user_id = $1
         ORDER BY updated_at DESC;
     `;
 
-    const { rows } = await pool.query(query, [userId]);
+  const { rows } = await pool.query(query, [userId]);
 
-    return rows;
+  return rows;
 }
 
 
@@ -62,4 +67,17 @@ export async function touchConversation(conversationId) {
     `;
 
     await pool.query(query, [conversationId]);
+} 
+export async function getUserConversations(userId) {
+  return await listUserConversations(userId);
+}
+
+export async function getConversationMessagesForUser({
+  conversationId,
+  userId,
+}) {
+  return await getConversationMessages({
+    conversationId,
+    userId,
+  });
 }
