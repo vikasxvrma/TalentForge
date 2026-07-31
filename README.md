@@ -1,67 +1,120 @@
 # TalentForge 🚀
 
-**TalentForge** is an AI-powered career intelligence platform that helps users interact with their resumes using Retrieval-Augmented Generation (RAG). It enables semantic resume search, AI-powered resume Q&A, and career conversations through a production-ready backend architecture.
+**TalentForge** is an AI-powered career intelligence platform that helps users transform their resumes into an intelligent career workspace. Using Retrieval-Augmented Generation (RAG), semantic search, and Large Language Models, TalentForge enables users to chat with their resumes, receive personalized career guidance, and prepare for interviews through a modern AI-powered interface.
 
-> **Status:** Backend deployed and production-ready. React frontend is currently under development.
+> **Status:** ✅ TalentForge V1 is live with a production-ready backend and a fully responsive React frontend.
 
 ---
 
 # Features
 
-* 🔐 Google OAuth Authentication
-* 🔑 JWT-based Authorization
-* 📄 Resume Upload & PDF Parsing
-* ✂️ Intelligent Text Chunking
-* 🧠 Gemini Embedding Generation
-* 🔎 Semantic Search using Qdrant
-* 💬 AI Resume Question Answering (RAG)
-* 🤖 General AI Career Chat
-* 💭 Multi-turn Conversation History
-* 👥 Multi-user Data Isolation
-* ☁️ Production Deployment on Railway
-* ✅ Continuous Integration with GitHub Actions
+## 🤖 AI Career Workspace
+
+- 💬 AI-powered career conversations
+- 📄 Resume Question Answering (RAG)
+- 🧠 Context-aware semantic retrieval
+- 💭 Multi-turn conversation history
+- ✨ Markdown & syntax-highlighted AI responses
+
+## 📄 Resume Intelligence
+
+- Resume Upload
+- PDF Parsing
+- Intelligent Text Chunking
+- Gemini Embedding Generation
+- Vector Search with Qdrant
+- Resume Processing Pipeline
+- Resume Status Tracking
+
+## 🔐 Authentication
+
+- Google OAuth Login
+- JWT Authentication
+- Secure Protected Routes
+- Session Restoration
+
+## 🎨 Modern Frontend
+
+- Responsive Dashboard
+- AI Chat Workspace
+- Resume Management
+- Light & Dark Theme
+- Mobile Navigation
+- Optimistic UI Updates
+- Real-time Resume Status
+
+## ⚙️ Infrastructure
+
+- Production Deployment (Railway + Vercel)
+- Continuous Integration (GitHub Actions)
+- Docker Development Environment
+- Cloud Storage (AWS S3)
+- Background Job Processing (BullMQ + Redis)
 
 ---
 
 # Tech Stack
 
-## Backend
+## Frontend
 
-* Node.js
-* Express.js
-* PostgreSQL (Neon)
-* Qdrant Cloud
-* Gemini API
-* LangChain
-* JWT
-* Google OAuth
-* Zod
-* Pino
-* Docker
-* Railway
-
-## Frontend (In Progress)
-
-* React
-* Vite
-* Tailwind CSS
-* React Router
-* TanStack Query
+- React 19
+- Vite
+- Tailwind CSS v4
+- React Router
+- TanStack Query
+- Axios
+- React Hook Form
+- Zod
+- Lucide React
+- React Markdown
 
 ---
 
-# Architecture
+## Backend
+
+- Node.js
+- Express.js
+- PostgreSQL (Neon)
+- Qdrant Cloud
+- Google Gemini
+- LangChain
+- JWT
+- Google OAuth
+- BullMQ
+- Redis
+- AWS S3
+- Zod
+- Pino Logger
+
+---
+
+## DevOps
+
+- Railway
+- Vercel
+- GitHub Actions
+- Docker
+- Docker Compose
+
+---
+
+# System Architecture
 
 ```text
-                 React Frontend (In Progress)
-                          │
-                          ▼
-                Railway (Node.js + Express)
-                          │
-      ┌───────────────────┼───────────────────┐
-      │                   │                   │
-      ▼                   ▼                   ▼
-Neon PostgreSQL      Qdrant Cloud        Gemini API
+                     ┌────────────────────────┐
+                     │    React Frontend      │
+                     │        (Vercel)        │
+                     └────────────┬───────────┘
+                                  │
+                                  ▼
+                     ┌────────────────────────┐
+                     │ Express Backend API    │
+                     │       (Railway)        │
+                     └────────────┬───────────┘
+                                  │
+          ┌──────────────┬─────────┼───────────────┬──────────────┐
+          ▼              ▼         ▼               ▼              ▼
+   Neon PostgreSQL   Qdrant    Gemini API      AWS S3      Redis/BullMQ
 ```
 
 ---
@@ -69,85 +122,121 @@ Neon PostgreSQL      Qdrant Cloud        Gemini API
 # Project Structure
 
 ```text
-server/
+TalentForge/
 │
-├── src/
-│   ├── config/
-│   ├── controllers/
-│   ├── middleware/
-│   ├── routes/
-│   ├── service/
-│   └── utils/
+├── client/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── hooks/
+│   │   ├── providers/
+│   │   ├── services/
+│   │   └── utils/
+│   │
+│   ├── public/
+│   └── package.json
 │
-├── database/
-│   └── schema.sql
+├── server/
+│   ├── src/
+│   │   ├── config/
+│   │   ├── controllers/
+│   │   ├── middleware/
+│   │   ├── repositories/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── workers/
+│   │   └── utils/
+│   │
+│   ├── Dockerfile
+│   └── package.json
 │
-├── Dockerfile
-├── docker-compose.yml
 └── .github/
     └── workflows/
+        ├── backend-ci.yml
+        └── frontend-ci.yml
 ```
 
 ---
 
 # Production Highlights
 
-* Production deployment on Railway
-* Managed PostgreSQL with Neon
-* Vector database hosted on Qdrant Cloud
-* AI-powered retrieval using Gemini Embeddings
-* Secure authentication with Google OAuth and JWT
-* Automated CI pipeline using GitHub Actions
-* Centralized logging and validation
-* Cloud-ready configuration
+- ✅ Fully deployed production application
+- ✅ Railway backend deployment
+- ✅ Vercel frontend deployment
+- ✅ Neon PostgreSQL
+- ✅ Qdrant Cloud Vector Database
+- ✅ AWS S3 Resume Storage
+- ✅ BullMQ Background Workers
+- ✅ Google Gemini Integration
+- ✅ GitHub Actions CI
+- ✅ Centralized Configuration & Validation
+- ✅ Production Logging
+- ✅ Responsive UI
+- ✅ Dark / Light Theme
 
 ---
 
-# Engineering Challenges Solved
+# Engineering Highlights
 
-* Migrated from local Docker databases to managed cloud services.
-* Configured Qdrant Cloud payload indexes for efficient filtered vector search.
-* Designed a multi-user RAG pipeline with isolated resume embeddings.
-* Built a production-ready deployment pipeline using Railway and GitHub Actions.
-* Implemented centralized error handling, request validation, and structured logging.
+- Built an end-to-end Retrieval-Augmented Generation (RAG) pipeline.
+- Designed a multi-user vector retrieval architecture with isolated resume embeddings.
+- Implemented optimistic UI updates for AI conversations.
+- Built asynchronous resume processing using BullMQ workers.
+- Migrated local infrastructure to managed cloud services (Neon, Qdrant Cloud, Railway).
+- Integrated AWS S3 using secure pre-signed uploads.
+- Implemented Google OAuth authentication with JWT session management.
+- Designed a responsive AI workspace supporting desktop and mobile devices.
+- Established CI pipelines for both frontend and backend using GitHub Actions.
 
 ---
 
 # Roadmap
 
-### ✅ Sprint 1–5
+## ✅ Version 1.0
 
-* Authentication
-* Resume Processing
-* RAG Pipeline
-* AI Chat
-* Production Deployment
-* CI/CD
-
-### 🚧 Sprint 6
-
-* React Frontend
-* Dashboard
-* Resume Upload UI
-* AI Chat Interface
-* Responsive Design
-
-### 🔮 Future Enhancements
-
-* Job Matching
-* Mock Interviews
-* AI Interview Evaluation
-* Career Analytics Dashboard
-* Learning Recommendations
+- Google Authentication
+- Resume Upload
+- Resume Processing
+- Semantic Search
+- RAG Chat
+- AI Career Assistant
+- Conversation History
+- Responsive Dashboard
+- Theme Switching
+- Production Deployment
 
 ---
 
-# Getting Started
+## 🚀 Version 2.0
+
+- Job Description Matching
+- Resume ATS Score
+- Resume Improvement Suggestions
+- Mock Interviews
+- AI Interview Evaluation
+- Interview Analytics
+- Learning Roadmaps
+- Skill Gap Analysis
+
+---
+
+# Local Development
+
+## Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/vikasxvrma/talentforge.git
 
-cd TalentForge/server
+cd TalentForge
+```
+
+---
+
+## Backend
+
+```bash
+cd server
 
 npm install
 
@@ -156,13 +245,60 @@ cp .env.example .env
 npm run dev
 ```
 
-The backend connects to **Neon PostgreSQL**, **Qdrant Cloud**, and **Gemini** using environment variables.
+---
+
+## Frontend
+
+```bash
+cd client
+
+npm install
+
+cp .env.example .env
+
+npm run dev
+```
+
+---
+
+# Environment
+
+Backend requires:
+
+- PostgreSQL
+- Redis
+- AWS S3
+- Google Gemini API
+- Google OAuth
+- Qdrant Cloud
+
+Frontend requires:
+
+- Backend API URL
+- Google Client ID
 
 ---
 
 # Live Demo
 
-**Backend:** `https://talentforge-production-e94b.up.railway.app/api/v1/health`
+🌐 **Frontend**
+
+> https://talent-forge-dusky.vercel.app/
+
+⚙️ **Backend API**
+
+> https://talentforge-production-e94b.up.railway.app
+
+---
+
+# Screenshots
+
+> <img width="1920" height="1080" alt="Screenshot (584)" src="https://github.com/user-attachments/assets/f670c51e-a812-45af-9534-de44622ce7d2" />
+> <img width="1920" height="1080" alt="Screenshot (585)" src="https://github.com/user-attachments/assets/2d010f50-6089-45fe-9a93-e76c400c9455" />
+> <img width="1920" height="1080" alt="Screenshot (586)" src="https://github.com/user-attachments/assets/f56c5883-5dd8-4612-bf6d-f979c48260e8" />
+
+
+
 
 ---
 
@@ -170,4 +306,4 @@ The backend connects to **Neon PostgreSQL**, **Qdrant Cloud**, and **Gemini** us
 
 **Vikas Verma**
 
-If you found this project interesting or have suggestions for improvement, feel free to open an issue or connect with me on LinkedIn.
+If you found this project interesting, feel free to ⭐ the repository and connect with me on LinkedIn.
