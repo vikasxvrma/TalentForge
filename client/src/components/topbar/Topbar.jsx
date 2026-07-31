@@ -7,7 +7,7 @@ import { useAuth } from "../../hooks/useAuth";
 import SearchBar from "./SearchBar";
 import { useEffect } from "react";
 import ThemeToggle from "../ui/ThemeToggle";
-import { useSidebar } from "../../providers/SidebarProvider";
+import { useSidebar } from "../../hooks/useSidebar";
 
 function Topbar() {
   const location = useLocation();
