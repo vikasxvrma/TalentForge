@@ -40,7 +40,7 @@ function Hero() {
 
         <Link
           to={cta.href}
-          className="mt-10 inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 font-semibold text-white transition hover:scale-[1.02]"
+          className="mt-10 inline-flex items-center gap-2 rounded-xl bg-primary px-7 py-4 font-semibold text-primary-foreground transition hover:scale-[1.02]"
         >
           {cta.label}
 

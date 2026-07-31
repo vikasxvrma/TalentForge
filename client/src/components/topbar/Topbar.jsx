@@ -3,11 +3,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { navigation } from "../../constants/navigation";
 import { useAuth } from "../../hooks/useAuth";
-import { useSidebar } from "../../context/SidebarContext";
 
 import SearchBar from "./SearchBar";
 import { useEffect } from "react";
 import ThemeToggle from "../ui/ThemeToggle";
+import { useSidebar } from "../../providers/SidebarProvider";
 
 function Topbar() {
   const location = useLocation();
@@ -67,7 +67,7 @@ function Topbar() {
 
           <button
             onClick={() => navigate("/settings")}
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-white transition hover:opacity-90"
+            className="flex cursor-pointer h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground transition hover:opacity-90"
           >
             {user?.name?.charAt(0).toUpperCase()}
           </button>

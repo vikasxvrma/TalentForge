@@ -76,7 +76,7 @@ export default function SidebarContent({ onNavigate }) {
           onClick={() => handleNavigate("/settings")}
           className="flex cursor-pointer w-full items-center gap-3 rounded-xl bg-background p-3 transition hover:bg-surface-hover"
         >
-          <div className="flex h-10 w-10  items-center justify-center rounded-full bg-primary font-semibold text-white">
+          <div className="flex h-10 w-10  items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground">
             {user?.name?.charAt(0) || "U"}
           </div>
 

@@ -1,5 +1,3 @@
-import React from 'react'
-
 const CardSkeleteton = () => {
   return (
     <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">

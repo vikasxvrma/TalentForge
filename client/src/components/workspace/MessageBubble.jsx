@@ -8,7 +8,7 @@ export default function MessageBubble({ message }) {
   if (isUser) {
     return (
       <div className="flex justify-end">
-        <div className="max-w-3xl rounded-3xl bg-violet-600 px-5 py-3 text-[15px] leading-7 text-white shadow-lg">
+        <div className="max-w-[90%] rounded-3xl bg-primary px-5 py-3 text-sm leading-7 text-primary-foreground shadow-sm sm:max-w-2xl">
           <p className="whitespace-pre-wrap break-words">
             {message.content}
           </p>
@@ -19,8 +19,39 @@ export default function MessageBubble({ message }) {
 
   return (
     <div className="flex justify-start">
-      <div className="max-w-4xl rounded-3xl border border-white/10 bg-[#15151B] px-6 py-5 text-[15px] leading-8 text-zinc-100">
-        <div className="prose prose-invert prose-pre:rounded-xl prose-pre:border prose-pre:border-white/10 prose-code:text-violet-300 max-w-none">
+      <div className="w-full max-w-4xl rounded-3xl border border-border bg-surface px-5 py-5 shadow-sm sm:px-6">
+        <div
+          className="
+            prose
+            max-w-none
+            prose-sm
+            sm:prose-base
+
+            prose-headings:text-foreground
+            prose-p:text-foreground
+            prose-strong:text-foreground
+            prose-li:text-foreground
+            prose-blockquote:text-muted
+
+            prose-a:text-primary
+
+            prose-code:text-primary
+            prose-code:before:hidden
+            prose-code:after:hidden
+
+            prose-pre:overflow-x-auto
+            prose-pre:rounded-xl
+            prose-pre:border
+            prose-pre:border-border
+            prose-pre:bg-background
+
+            prose-table:block
+            prose-table:overflow-x-auto
+            prose-table:border-collapse
+
+            dark:prose-invert
+          "
+        >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight]}

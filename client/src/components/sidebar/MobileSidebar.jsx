@@ -3,7 +3,7 @@ import { X } from "lucide-react";
 import clsx from "clsx";
 
 import SidebarContent from "./SidebarContent";
-import { useSidebar } from "../../context/SidebarContext";
+import { useSidebar } from "../../providers/SidebarProvider";
 
 export default function MobileSidebar() {
   const { isOpen, closeSidebar } = useSidebar();

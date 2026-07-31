@@ -62,7 +62,7 @@ export default function PromptComposer({
             <button
               onClick={handleSubmit}
               disabled={!message.trim() || isSending}
-              className="flex h-11 w-11 items-center justify-center self-end rounded-full bg-primary text-white transition-all duration-200 hover:scale-105 hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-surface-hover disabled:text-muted"
+              className="flex h-11 w-11 items-center justify-center self-end rounded-full bg-primary text-primary-foreground transition-all duration-200 hover:scale-105 hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-surface-hover disabled:text-muted"
             >
               <SendHorizontal size={18} />
             </button>

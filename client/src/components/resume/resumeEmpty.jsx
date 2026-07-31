@@ -1,5 +1,4 @@
 import {
-  Upload,
   FileText,
   Sparkles,
   MessageSquare,

@@ -13,9 +13,12 @@ on:
       - main
     paths:
       - "client/**"
+      - ".github/workflows/frontend-ci.yml"
 
 jobs:
-  build:
+  frontend-build:
+    name: Frontend Build
+
     runs-on: ubuntu-latest
 
     defaults:
@@ -29,12 +32,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 22.20.0
           cache: npm
           cache-dependency-path: client/package-lock.json
 
       - name: Install Dependencies
         run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
 
       - name: Build Application
         run: npm run build

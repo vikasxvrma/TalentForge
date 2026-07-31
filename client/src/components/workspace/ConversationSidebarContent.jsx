@@ -32,7 +32,7 @@ export default function ConversationSidebarContent({
       <div className="border-b border-border p-4">
         <button
           onClick={handleNewChat}
-          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary hover:text-white"
+          className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium text-foreground transition-all duration-200 hover:border-primary/30 hover:bg-primary hover:text-primary-foreground"
         >
           <Plus size={18} />
           New Chat

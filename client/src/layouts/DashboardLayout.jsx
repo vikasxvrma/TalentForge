@@ -4,7 +4,7 @@ import Sidebar from "../components/sidebar/Sidebar";
 import MobileSidebar from "../components/sidebar/MobileSidebar";
 import Topbar from "../components/topbar/Topbar";
 
-import { SidebarProvider } from "../context/SidebarContext";
+import { SidebarProvider } from "../providers/SidebarProvider";
 
 function DashboardLayout() {
   return (

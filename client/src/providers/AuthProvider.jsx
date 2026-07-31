@@ -1,11 +1,15 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import { getCurrentUser, loginWithGoogle } from "../api/authApi";
-import { useNavigate } from "react-router-dom";
-import client from "../api/client";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+import { AuthContext } from "../context/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
-
-export const AuthContext = createContext(null);
-
+import { useNavigate } from "react-router-dom";
+import { getCurrentUser, loginWithGoogle } from "../api/authApi";
+import client from "../api/client";
 const TOKEN_KEY = "token";
 
 export function AuthProvider({ children }) {
