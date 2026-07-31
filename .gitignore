@@ -1,12 +1,11 @@
 server/node_modules
 server/.env
 server/.env.docker
+
+client/node_modules
+client/.env
+
 .env
 .env.docker
-server/.env
-*.log
-server/uploads/
 
-# client side 
-client/.env
-client/
+*.log
