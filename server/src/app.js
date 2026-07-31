@@ -20,7 +20,20 @@ const app = express();
 // cors middleware
 app.use(
   cors({
-    origin: [config.frontend.origins],
+    origin(origin, callback) {
+      // Allow requests without Origin (Postman, server-to-server)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (config.frontend.origins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(
+        new Error(`Origin ${origin} is not allowed by CORS`)
+      );
+    },
     credentials: true,
   }),
 );
@@ -50,9 +63,9 @@ app.use("/api/v1/resumes", resumeRouter);
 // login via google oAuth
 app.use("/api/v1/auth", authRouter);
 // storage router 
-app.use("/api/v1/storage",storageRouter);
+app.use("/api/v1/storage", storageRouter);
 // conversations router 
-app.use("/api/v1/conversations",conversationRouter);
+app.use("/api/v1/conversations", conversationRouter);
 
 // default routing
 app.get("/", (req, res) => {

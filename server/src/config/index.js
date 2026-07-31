@@ -19,7 +19,9 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().min(1, "GEMINI_API_KEY is required"),
 
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID is required"),
-  FRONTEND_URL: z.string().url("FRONTEND_URL must be a valid URL"),
+  FRONTEND_URL: z
+    .string()
+    .min(1, "FRONTEND_URL is required"),
   QDRANT_URL: z.string().url("QDRANT_URL must be a valid URL").optional(),
 
   QDRANT_API_KEY: z.string().optional(),
@@ -81,7 +83,9 @@ const config = Object.freeze({
     embeddingModel: env.GEMINI_EMBEDDING_MODEL,
   },
   frontend: {
-    origins: env.FRONTEND_URL.split(","),
+    origins: env.FRONTEND_URL
+      .split(",")
+      .map(origin => origin.trim()),
   },
   storage: {
     region: env.AWS_REGION,
