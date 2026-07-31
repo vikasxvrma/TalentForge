@@ -3,7 +3,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-import ResumeUpload from "./resumeUpload";
+import ResumeUpload from "./ResumeUpload";
 
 export default function ResumeFailed({ resume }) {
   return (

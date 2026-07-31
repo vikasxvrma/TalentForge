@@ -1,4 +1,4 @@
-import ResumeStatus from "../components/resume/resumeStatus";
+import ResumeStatus from "../components/resume/ResumeStatus";
 
 function Resume() {
   return (

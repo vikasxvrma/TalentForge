@@ -3,7 +3,7 @@ import {
   Sparkles,
   MessageSquare,
 } from "lucide-react";
-import ResumeUpload from "./resumeUpload";
+import ResumeUpload from "./ResumeUpload";
 
 function ResumeEmpty() {
   return (
