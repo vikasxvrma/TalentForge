@@ -96,7 +96,7 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+   <div className="flex min-h-dvh bg-background">
       {/* Desktop Sidebar */}
       <ConversationSidebar
         conversationId={conversationId}
@@ -110,7 +110,7 @@ export default function ChatPage() {
       />
 
       {/* Workspace */}
-      <main className="flex min-h-0 flex-1 flex-col">
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <WorkspaceHeader
           onMenuClick={() => setSidebarOpen(true)}
         />

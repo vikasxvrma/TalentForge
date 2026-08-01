@@ -27,7 +27,7 @@ const suggestions = [
 
 export default function EmptyWorkspace() {
   return (
-    <div className="flex h-full items-center justify-center px-6">
+    <div className="flex flex-1 items-start justify-center overflow-y-auto px-6 py-10 sm:items-center sm:py-0">
       <div className="w-full max-w-3xl text-center">
         <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
           <Sparkles
