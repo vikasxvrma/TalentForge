@@ -2,7 +2,6 @@ import clsx from "clsx";
 
 export default function PageSpinner({
   message = "Loading experience...",
-  showLogo = true,
   className,
 }) {
   return (
