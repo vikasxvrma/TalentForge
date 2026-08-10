@@ -1,3 +1,5 @@
+import ScoreGrid from "./interviewScoreGrid";
+
 export default function InterviewEvaluation({
   evaluation,
   final = false,

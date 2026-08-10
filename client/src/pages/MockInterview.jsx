@@ -13,10 +13,10 @@ import useInterviewEnvironment from "../hooks/interview/useInterviewEnvironment"
 import InterviewHeader from "../components/interview/InterviewHeaders";
 import InterviewIntro from "../components/interview/InterviewIntro";
 import InterviewConfiguration from "../components/interview/InterviewConfiguration";
-import InterviewEvaluation from "../components/interview/InterviewEvaluation";
 import AIInterviewerPanel from "../components/interview/AIInterviewPanel.jsx";
 import InterviewQuestionPanel from "../components/interview/InterviewQuestionPanel.jsx";
 import InterviewProgress from "../components/interview/InterviewProgress.jsx";
+import InterviewEvaluation from "../components/interview/InterviewEvaluation";
 
 
 
