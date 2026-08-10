@@ -59,22 +59,27 @@ Score the candidate from 0 to 10 on:
 Evaluation should depend on the question type.
 
 For resume/project questions:
+
 - Evaluate whether the candidate demonstrates genuine understanding
   and ownership of the work.
 - Do not penalize them for not mentioning irrelevant resume details.
 
 For technical fundamentals:
+
 - Focus on conceptual correctness and clarity.
 
 For practical scenarios:
+
 - Focus on reasoning, problem decomposition, trade-offs,
   and practicality of the proposed solution.
 
 For deep technical questions:
+
 - Focus on depth, technical reasoning, trade-offs,
   and understanding of underlying mechanisms.
 
 For introductory questions:
+
 - Be encouraging and evaluate clarity, relevance,
   and understanding rather than expecting advanced technical depth.
 
@@ -103,7 +108,8 @@ Return exactly this structure:
 }
 `;
 
-  const response = await generateText(prompt);
+  const response =
+    await generateText(prompt);
 
   const cleaned = response
     .replace(/```json/g, "")
@@ -120,6 +126,9 @@ Return exactly this structure:
 
     throw new Error(
       "AI returned an invalid interview evaluation.",
+      {
+        cause: error,
+      },
     );
   }
 }

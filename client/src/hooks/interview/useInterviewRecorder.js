@@ -19,54 +19,37 @@ export default function useInterviewRecorder() {
   // SPEECH RECOGNITION LATENCY
   // =====================================================
 
-  /*
-   * Measures the browser SpeechRecognition lifecycle.
-   *
-   * recognitionStartedAtRef:
-   *   When SpeechRecognition actually starts.
-   *
-   * firstResultAtRef:
-   *   When the browser gives us the first result.
-   *
-   * finalResultAtRef:
-   *   When the final transcript result is received.
-   */
-  const recognitionStartedAtRef =
-    useRef(null);
+  const recognitionStartedAtRef = useRef(null);
 
-  const firstResultAtRef =
-    useRef(null);
+  const firstResultAtRef = useRef(null);
 
-  const finalResultAtRef =
-    useRef(null);
+  const finalResultAtRef = useRef(null);
 
   // =====================================================
   // INTERRUPTION / VAD
   // =====================================================
 
-  const microphoneStreamRef =
-    useRef(null);
+  const microphoneStreamRef = useRef(null);
 
-  const audioContextRef =
-    useRef(null);
+  const audioContextRef = useRef(null);
 
-  const analyserRef =
-    useRef(null);
+  const analyserRef = useRef(null);
 
-  const animationFrameRef =
-    useRef(null);
+  const animationFrameRef = useRef(null);
 
-  const interruptionCallbackRef =
-    useRef(null);
+  const interruptionCallbackRef = useRef(null);
 
-  const speechStartedAtRef =
-    useRef(null);
+  const speechStartedAtRef = useRef(null);
 
-  const lastInterruptionAtRef =
-    useRef(0);
+  const lastInterruptionAtRef = useRef(0);
 
-  const interruptionEnabledRef =
-    useRef(false);
+  const interruptionEnabledRef = useRef(false);
+
+  /*
+   * Keeps the latest detectSpeech callback available
+   * without creating a declaration cycle.
+   */
+  const detectSpeechRef = useRef(null);
 
   // =====================================================
   // STATE
@@ -91,23 +74,10 @@ export default function useInterviewRecorder() {
   // VAD CONFIG
   // =====================================================
 
-  /*
-   * Microphone volume threshold.
-   *
-   * Keep this conservative initially.
-   * We can tune this during final optimization.
-   */
   const SPEECH_THRESHOLD = 0.035;
 
-  /*
-   * User must produce sustained audio for this
-   * duration before we consider it speech.
-   */
   const SPEECH_CONFIRMATION_MS = 140;
 
-  /*
-   * Prevent repeated interruption triggers.
-   */
   const INTERRUPTION_COOLDOWN_MS = 1000;
 
   // =====================================================
@@ -164,12 +134,10 @@ export default function useInterviewRecorder() {
     const volume =
       calculateRms(dataArray);
 
-    const now =
-      performance.now();
+    const now = performance.now();
 
     if (
-      volume >=
-      SPEECH_THRESHOLD
+      volume >= SPEECH_THRESHOLD
     ) {
       if (
         speechStartedAtRef.current ===
@@ -215,10 +183,16 @@ export default function useInterviewRecorder() {
     }
 
     animationFrameRef.current =
-      requestAnimationFrame(
-        detectSpeech,
-      );
+      requestAnimationFrame(() => {
+        detectSpeechRef.current?.();
+      });
   }, [calculateRms]);
+
+  // Keep the ref synchronized with the latest callback.
+  useEffect(() => {
+    detectSpeechRef.current =
+      detectSpeech;
+  }, [detectSpeech]);
 
   // =====================================================
   // START INTERRUPTION DETECTION
@@ -318,6 +292,7 @@ export default function useInterviewRecorder() {
             audioContext.createAnalyser();
 
           analyser.fftSize = 512;
+
           analyser.smoothingTimeConstant =
             0.75;
 
@@ -347,9 +322,9 @@ export default function useInterviewRecorder() {
           }
 
           animationFrameRef.current =
-            requestAnimationFrame(
-              detectSpeech,
-            );
+            requestAnimationFrame(() => {
+              detectSpeechRef.current?.();
+            });
 
           return true;
         } catch (error) {
@@ -367,7 +342,7 @@ export default function useInterviewRecorder() {
           return false;
         }
       },
-      [detectSpeech],
+      [],
     );
 
   // =====================================================
@@ -463,7 +438,9 @@ export default function useInterviewRecorder() {
         new SpeechRecognition();
 
       recognition.continuous = true;
+
       recognition.interimResults = true;
+
       recognition.lang = "en-US";
 
       finalTranscriptRef.current =
@@ -484,15 +461,11 @@ export default function useInterviewRecorder() {
       finalResultAtRef.current =
         null;
 
-      // -----------------------------------------------
+      // =================================================
       // Recognition started
-      // -----------------------------------------------
+      // =================================================
 
       recognition.onstart = () => {
-        /*
-         * This is the actual browser recognition start,
-         * not merely the moment startRecording() was called.
-         */
         recognitionStartedAtRef.current =
           performance.now();
 
@@ -507,14 +480,15 @@ export default function useInterviewRecorder() {
         console.info(
           "[TalentForge STT]",
           {
-            event: "recognition_started",
+            event:
+              "recognition_started",
           },
         );
       };
 
-      // -----------------------------------------------
+      // =================================================
       // Recognition result
-      // -----------------------------------------------
+      // =================================================
 
       recognition.onresult = (
         event,
@@ -536,14 +510,6 @@ export default function useInterviewRecorder() {
           if (
             result.isFinal
           ) {
-            /*
-             * First result latency.
-             *
-             * This represents the time from actual
-             * recognition start until the browser
-             * gives us the first finalized recognition
-             * result.
-             */
             if (
               firstResultAtRef.current ===
               null
@@ -594,9 +560,9 @@ export default function useInterviewRecorder() {
         );
       };
 
-      // -----------------------------------------------
+      // =================================================
       // Recognition error
-      // -----------------------------------------------
+      // =================================================
 
       recognition.onerror = (
         event,
@@ -612,9 +578,9 @@ export default function useInterviewRecorder() {
           null;
       };
 
-      // -----------------------------------------------
+      // =================================================
       // Recognition ended
-      // -----------------------------------------------
+      // =================================================
 
       recognition.onend = () => {
         const recognitionEndedAt =

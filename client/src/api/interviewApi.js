@@ -1,6 +1,4 @@
 import client from "./client";
-import apiClient from "./client";
-
 export const startInterview = async ({
   role,
   interviewType,

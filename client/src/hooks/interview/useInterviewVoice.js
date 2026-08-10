@@ -1,4 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   getInterviewQuestionAudio,
@@ -22,22 +26,26 @@ export default function useInterviewVoice() {
    *      ↓
    * old audio tries to play
    */
-  const speechOperationRef = useRef(0);
+  const speechOperationRef =
+    useRef(0);
 
   /*
    * Used to resolve the promise returned by
    * playAudioBlob() when audio is manually interrupted.
    */
-  const playbackResolverRef = useRef(null);
+  const playbackResolverRef =
+    useRef(null);
 
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const [isSpeaking, setIsSpeaking] =
+    useState(false);
 
   // =====================================================
   // CLEANUP AUDIO
   // =====================================================
 
   const cleanupAudio = () => {
-    const audio = audioRef.current;
+    const audio =
+      audioRef.current;
 
     if (audio) {
       audio.onended = null;
@@ -71,178 +79,112 @@ export default function useInterviewVoice() {
   const playAudioBlob = (
     blob,
     operationId,
-    metrics = {},
   ) => {
-    return new Promise(async (resolve, reject) => {
-      /*
-       * If this operation was already cancelled while
-       * the audio was being fetched, don't play it.
-       */
-      if (
-        operationId !==
-        speechOperationRef.current
-      ) {
-        resolve();
-        return;
-      }
-
-      const audioPreparationStart =
-        performance.now();
-
-      const audioUrl =
-        URL.createObjectURL(blob);
-
-      objectUrlRef.current = audioUrl;
-
-      const audio = new Audio(audioUrl);
-
-      audioRef.current = audio;
-
-      const audioPreparationMs = Math.round(
-        performance.now() -
-          audioPreparationStart,
-      );
-
-      let settled = false;
-
-      /*
-       * Total voice lifecycle starts when the API
-       * request starts.
-       */
-      const requestStart =
-        metrics.requestStart ||
-        performance.now();
-
-      const finish = () => {
-        if (settled) {
-          return;
-        }
-
-        settled = true;
-
-        if (
-          playbackResolverRef.current ===
-          finish
-        ) {
-          playbackResolverRef.current =
-            null;
-        }
-
-        const playbackEnd =
-          performance.now();
-
-        const playbackDurationMs =
-          metrics.playbackStart
-            ? Math.round(
-                playbackEnd -
-                  metrics.playbackStart,
-              )
-            : 0;
-
-        const totalVoiceMs = Math.round(
-          playbackEnd - requestStart,
-        );
-
-        const latency = {
-          requestMs:
-            metrics.responseReceived
-              ? Math.round(
-                  metrics.responseReceived -
-                    requestStart,
-                )
-              : null,
-
-          responseToPlaybackMs:
-            metrics.playbackStart &&
-            metrics.responseReceived
-              ? Math.round(
-                  metrics.playbackStart -
-                    metrics.responseReceived,
-                )
-              : null,
-
-          audioPreparationMs,
-
-          timeToPlaybackMs:
-            metrics.playbackStart
-              ? Math.round(
-                  metrics.playbackStart -
-                    requestStart,
-                )
-              : null,
-
-          playbackDurationMs,
-
-          totalVoiceMs,
-        };
-
-        console.info(
-          "[TalentForge Voice Latency]",
-          latency,
-        );
-
-        cleanupAudio();
-
+    return new Promise(
+      (resolve, reject) => {
         /*
-         * Only the current speech operation is allowed
-         * to modify the speaking state.
+         * If this operation was already cancelled while
+         * the audio was being fetched, don't play it.
          */
         if (
-          operationId ===
+          operationId !==
           speechOperationRef.current
         ) {
-          setIsSpeaking(false);
-        }
-
-        resolve(latency);
-      };
-
-      const fail = (error) => {
-        if (settled) {
+          resolve();
           return;
         }
 
-        settled = true;
+        const audioUrl =
+          URL.createObjectURL(blob);
 
-        if (
-          playbackResolverRef.current ===
-          finish
-        ) {
-          playbackResolverRef.current =
-            null;
-        }
+        objectUrlRef.current =
+          audioUrl;
 
-        cleanupAudio();
+        const audio =
+          new Audio(audioUrl);
 
-        if (
-          operationId ===
-          speechOperationRef.current
-        ) {
-          setIsSpeaking(false);
-        }
+        audioRef.current =
+          audio;
 
-        reject(error);
-      };
+        let settled = false;
 
-      playbackResolverRef.current = finish;
+        const finish = () => {
+          if (settled) {
+            return;
+          }
 
-      /*
-       * IMPORTANT:
-       *
-       * We resolve only when the audio has ACTUALLY
-       * finished playing.
-       */
-      audio.onended = finish;
+          settled = true;
 
-      audio.onerror = () => {
-        fail(
-          new Error(
-            "Interview audio playback failed.",
-          ),
-        );
-      };
+          if (
+            playbackResolverRef.current ===
+            finish
+          ) {
+            playbackResolverRef.current =
+              null;
+          }
 
-      try {
+          cleanupAudio();
+
+          /*
+           * Only the current speech operation is allowed
+           * to modify the speaking state.
+           */
+          if (
+            operationId ===
+            speechOperationRef.current
+          ) {
+            setIsSpeaking(false);
+          }
+
+          resolve();
+        };
+
+        const fail = (error) => {
+          if (settled) {
+            return;
+          }
+
+          settled = true;
+
+          if (
+            playbackResolverRef.current ===
+            finish
+          ) {
+            playbackResolverRef.current =
+              null;
+          }
+
+          cleanupAudio();
+
+          if (
+            operationId ===
+            speechOperationRef.current
+          ) {
+            setIsSpeaking(false);
+          }
+
+          reject(error);
+        };
+
+        playbackResolverRef.current =
+          finish;
+
+        /*
+         * IMPORTANT:
+         *
+         * We resolve only when the audio has ACTUALLY
+         * finished playing.
+         */
+        audio.onended = finish;
+
+        audio.onerror = () => {
+          fail(
+            new Error(
+              "Interview audio playback failed.",
+            ),
+          );
+        };
+
         /*
          * Make sure the operation is still current
          * immediately before starting playback.
@@ -255,39 +197,13 @@ export default function useInterviewVoice() {
           return;
         }
 
-        const playbackStart =
-          performance.now();
-
-        /*
-         * Store playback start so we can calculate
-         * time-to-first-playback and playback duration.
-         */
-        metrics.playbackStart =
-          playbackStart;
-
-        await audio.play();
-
-        /*
-         * Browser audio.play() resolves once playback
-         * has successfully started.
-         *
-         * This is our closest browser-side measurement
-         * of first audio playback.
-         */
-        console.info(
-          "[TalentForge Voice Playback]",
-          {
-            timeToPlaybackMs:
-              Math.round(
-                playbackStart -
-                  requestStart,
-              ),
-          },
-        );
-      } catch (error) {
-        fail(error);
-      }
-    });
+        audio
+          .play()
+          .catch((error) => {
+            fail(error);
+          });
+      },
+    );
   };
 
   // =====================================================
@@ -307,9 +223,6 @@ export default function useInterviewVoice() {
     const operationId =
       speechOperationRef.current;
 
-    const requestStart =
-      performance.now();
-
     try {
       setIsSpeaking(true);
 
@@ -318,9 +231,6 @@ export default function useInterviewVoice() {
           sessionId,
           questionId,
         });
-
-      const responseReceived =
-        performance.now();
 
       /*
        * The user may have interrupted us while the
@@ -336,26 +246,10 @@ export default function useInterviewVoice() {
       /*
        * This waits for ACTUAL audio completion.
        */
-      const latency =
-        await playAudioBlob(
-          blob,
-          operationId,
-          {
-            requestStart,
-            responseReceived,
-          },
-        );
-
-      console.info(
-        "[TalentForge Question Voice Latency]",
-        {
-          sessionId,
-          questionId,
-          ...latency,
-        },
+      await playAudioBlob(
+        blob,
+        operationId,
       );
-
-      return latency;
     } catch (error) {
       /*
        * An interrupted operation should not be treated
@@ -396,17 +290,11 @@ export default function useInterviewVoice() {
     const operationId =
       speechOperationRef.current;
 
-    const requestStart =
-      performance.now();
-
     try {
       setIsSpeaking(true);
 
       const blob =
         await speakInterviewText(text);
-
-      const responseReceived =
-        performance.now();
 
       /*
        * The user may have interrupted the welcome
@@ -419,22 +307,13 @@ export default function useInterviewVoice() {
         return;
       }
 
-      const latency =
-        await playAudioBlob(
-          blob,
-          operationId,
-          {
-            requestStart,
-            responseReceived,
-          },
-        );
-
-      console.info(
-        "[TalentForge Welcome Voice Latency]",
-        latency,
+      /*
+       * Wait until the audio has ACTUALLY finished.
+       */
+      await playAudioBlob(
+        blob,
+        operationId,
       );
-
-      return latency;
     } catch (error) {
       if (
         operationId !==
@@ -467,11 +346,14 @@ export default function useInterviewVoice() {
     /*
      * Resolve the currently waiting playback promise.
      */
-    if (playbackResolverRef.current) {
+    if (
+      playbackResolverRef.current
+    ) {
       const resolver =
         playbackResolverRef.current;
 
-      playbackResolverRef.current = null;
+      playbackResolverRef.current =
+        null;
 
       resolver();
     }
@@ -487,13 +369,17 @@ export default function useInterviewVoice() {
 
   useEffect(() => {
     return () => {
-      speechOperationRef.current += 1;
+      speechOperationRef.current +=
+        1;
 
-      if (playbackResolverRef.current) {
+      if (
+        playbackResolverRef.current
+      ) {
         const resolver =
           playbackResolverRef.current;
 
-        playbackResolverRef.current = null;
+        playbackResolverRef.current =
+          null;
 
         resolver();
       }
@@ -501,6 +387,10 @@ export default function useInterviewVoice() {
       cleanupAudio();
     };
   }, []);
+
+  // =====================================================
+  // RETURN
+  // =====================================================
 
   return {
     isSpeaking,

@@ -1,75 +1,118 @@
-// here we are setting up our server not starting
+// Here we are setting up our server, not starting it.
+
 import express from "express";
+import cors from "cors";
+import crypto from "crypto";
+import pinoHttp from "pino-http";
+
 import chatRouter from "./routes/chatRouter.js";
 import resumeRouter from "./routes/resumeRouter.js";
 import errorMiddleware from "./middleware/error.middleware.js";
-import pinoHttp from "pino-http";
-import crypto from "crypto";
 import logger from "./config/logger.js";
-import cors from "cors";
 import config from "./config/index.js";
-import storagetRouter from "./routes/storageRouter.js";
 import storageRouter from "./routes/storageRouter.js";
 import healthRouter from "./routes/index.js";
 import authRouter from "./routes/authRouter.js";
 import conversationRouter from "./routes/conversationRouter.js";
 import interviewRouter from "./routes/interviewRouter.js";
-// create object
+
+// =====================================================
+// CREATE APP
+// =====================================================
+
 const app = express();
 
-// <-----------------middlewares-------------->
-// cors middleware
+// =====================================================
+// CORS
+// =====================================================
+
 app.use(
   cors({
     origin(origin, callback) {
-      // Allow requests without Origin (Postman, server-to-server)
+      // Allow requests without Origin
+      // (Postman, server-to-server, etc.)
       if (!origin) {
         return callback(null, true);
       }
 
-      if (config.frontend.origins.includes(origin)) {
+      if (
+        config.frontend.origins.includes(origin)
+      ) {
         return callback(null, true);
       }
 
       return callback(
-        new Error(`Origin ${origin} is not allowed by CORS`)
+        new Error(
+          `Origin ${origin} is not allowed by CORS`,
+        ),
       );
     },
+
     credentials: true,
   }),
 );
-// logger middleware
+
+// =====================================================
+// LOGGER
+// =====================================================
+
 app.use(
   pinoHttp({
     logger,
   }),
 );
+
+// =====================================================
+// BODY PARSER
+// =====================================================
+
 app.use(express.json());
 
-// to provide each user a request id
-// so that their logs differ from others
+// =====================================================
+// REQUEST ID
+// =====================================================
 
 app.use((req, res, next) => {
   req.requestId = crypto.randomUUID();
 
   next();
 });
-//  <--------------routing --------------------->
-// health router 
+
+// =====================================================
+// ROUTES
+// =====================================================
+
+// Health
 app.use("/api/v1", healthRouter);
-// chat router
+
+// Chat
 app.use("/api/v1/chat", chatRouter);
-// resumes router
+
+// Resumes
 app.use("/api/v1/resumes", resumeRouter);
-// login via google oAuth
+
+// Authentication
 app.use("/api/v1/auth", authRouter);
-// storage router 
+
+// Storage
 app.use("/api/v1/storage", storageRouter);
-// conversations router 
-app.use("/api/v1/conversations", conversationRouter);
-// interview router
-app.use("/api/v1/interviews" ,interviewRouter);
-// default routing
+
+// Conversations
+app.use(
+  "/api/v1/conversations",
+  conversationRouter,
+);
+
+// Interviews
+app.use(
+  "/api/v1/interviews",
+  interviewRouter,
+);
+
+// =====================================================
+// ROOT
+// =====================================================
+
 app.get("/", (req, res) => {
   return res.status(200).json({
     name: "TalentForge API",
@@ -77,8 +120,18 @@ app.get("/", (req, res) => {
     status: "running",
   });
 });
-// error middleware
+
+// =====================================================
+// ERROR HANDLER
+// =====================================================
+
 app.use(errorMiddleware);
 
-// we will not make it listen
+// =====================================================
+// EXPORT
+// =====================================================
+
+// We intentionally do not call app.listen() here.
+// The server entry point is responsible for starting it.
+
 export default app;
