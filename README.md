@@ -49,6 +49,8 @@ Candidate ─▶ Browser Speech Recognition ─▶ Interview Engine (Backend)
                             Spoken Question ─▶ Candidate
 ```
 
+![TalentForge architecture diagram](docs/talentforge-architecture.png)
+
 ---
 
 ## Rime Integration (Voice)
@@ -98,6 +100,8 @@ Each spoken response is tagged with a unique speech-operation ID. If the candida
 ## Latency Instrumentation
 
 Backend and frontend both log timing for: STT first-result, Qdrant retrieval, Gemini generation/evaluation, Rime TTS, backend processing, and time-to-first-playback. Final numbers are produced from real interview runs (see repo for reproduction steps).
+
+![TalentForge latency breakdown](docs/talentforge-latency.png)
 
 ---
 
