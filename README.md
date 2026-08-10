@@ -166,8 +166,8 @@ Never commit API keys, DB credentials, or production `.env` files.
 
 ## Demo
 
-- **Full demo:** link to be added after final recording
-- **20–30s showcase clip:** link to be added after final recording
+- **Full demo:** [Watch on Google Drive](https://drive.google.com/file/d/1-QaLRtNhJeh7qet2lUjbb4vC_jQjtis6/view?usp=drive_link)
+- **20–30s showcase clip:** link to be added
 
 ## Team Contributions
 
