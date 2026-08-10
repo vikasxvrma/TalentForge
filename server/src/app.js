@@ -13,6 +13,7 @@ import storageRouter from "./routes/storageRouter.js";
 import healthRouter from "./routes/index.js";
 import authRouter from "./routes/authRouter.js";
 import conversationRouter from "./routes/conversationRouter.js";
+import interviewRouter from "./routes/interviewRouter.js";
 // create object
 const app = express();
 
@@ -66,7 +67,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/storage", storageRouter);
 // conversations router 
 app.use("/api/v1/conversations", conversationRouter);
-
+// interview router
+app.use("/api/v1/interviews" ,interviewRouter);
 // default routing
 app.get("/", (req, res) => {
   return res.status(200).json({

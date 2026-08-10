@@ -39,6 +39,17 @@ const envSchema = z.object({
   REDIS_URL: z
     .string()
     .url("REDIS_URL is required"),
+  RIME_API_KEY: z
+    .string()
+    .min(1, "RIME_API_KEY is required"),
+
+  RIME_MODEL: z
+    .string()
+    .default("mistv3"),
+
+  RIME_SPEAKER: z
+    .string()
+    .default("cove"),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);
@@ -82,6 +93,11 @@ const config = Object.freeze({
     chatModel: env.GEMINI_CHAT_MODEL,
     embeddingModel: env.GEMINI_EMBEDDING_MODEL,
   },
+  rime: {
+  apiKey: env.RIME_API_KEY,
+  model: env.RIME_MODEL,
+  speaker: env.RIME_SPEAKER,
+},
   frontend: {
     origins: env.FRONTEND_URL
       .split(",")
